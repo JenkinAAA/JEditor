@@ -1,0 +1,236 @@
+/* ============================================
+   JEditor 统一样式表
+   所有库内部样式均在此定义，不依赖 Tailwind
+   ============================================ */
+
+/* ---------- 配色变量 ---------- */
+:root {
+    --je-blue: #0052d9;
+    --je-blue-active: #e6f0ff;
+    --je-divider: #e0e0e0;
+    --je-hover: #eeeeee;
+    --je-radius: 4px;
+}
+
+/* ---------- 编辑器最外层容器 ---------- */
+.je-container {
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- 工具栏行（通用） ---------- */
+.je-toolbar-row {
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    flex-shrink: 0;
+    gap: 1px;
+}
+
+/* 第一行：白色 44px */
+.je-toolbar-row--primary {
+    height: 44px;
+    background: #ffffff;
+}
+
+/* 第二行：灰色 42px 圆角 */
+.je-toolbar-row--secondary {
+    height: 42px;
+    background: #F3F4F6;
+    border-radius: 6px;
+    margin: 0 8px 4px;
+}
+
+/* 弹性留白（实现 justify-between 效果） */
+.je-spacer {
+    flex: 1;
+}
+
+/* ---------- 纵向分隔线 ---------- */
+.v-divider {
+    width: 1px;
+    height: 16px;
+    background-color: var(--je-divider);
+    margin: 0 6px;
+    flex-shrink: 0;
+}
+
+/* ---------- 按钮基础 ---------- */
+.tool-btn,
+.tool-btn-text,
+.tool-btn-arrow-down {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    border-radius: var(--je-radius);
+    color: #444;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    flex-shrink: 0;
+    transition: background-color 0.1s ease;
+    line-height: 1;
+}
+
+/* 方形图标按钮 28×28 */
+.tool-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+    padding: 0;
+}
+
+.tool-btn:hover { background-color: var(--je-hover); }
+
+/* 文字按钮 */
+.tool-btn-text {
+    height: 28px;
+    padding: 0 6px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.tool-btn-text:hover { background-color: var(--je-hover); }
+
+/* 小箭头 */
+.tool-btn-arrow-down {
+    width: 16px;
+    height: 28px;
+    padding: 0;
+    color: #999;
+}
+
+.tool-btn-arrow-down:hover { background-color: var(--je-hover); }
+
+/* ---------- 图标统一 20×20 ---------- */
+.tool-btn svg,
+.tool-btn-text svg,
+.tool-btn-arrow-down svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* 箭头图标缩小 */
+.tool-btn-text svg,
+.tool-btn-arrow-down svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* ---------- 颜色复合按钮 ---------- */
+.je-color-group {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.je-color-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+    gap: 1px;
+}
+
+.je-color-char {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.je-color-bar {
+    width: 16px;
+    height: 3px;
+    border-radius: 1px;
+}
+
+/* ---------- 按钮状态 ---------- */
+.tool-btn.is-active {
+    background-color: var(--je-blue-active);
+    color: var(--je-blue);
+}
+
+.tool-btn.is-disabled {
+    opacity: 0.35;
+    pointer-events: none;
+    cursor: default;
+}
+
+/* ---------- 编辑区容器 ---------- */
+.je-editor-area {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+/* Tiptap 编辑区 */
+.je-editor-area .tiptap {
+    flex: 1;
+    min-height: 700px;
+    padding: 32px 60px;
+    outline: none;
+    cursor: text;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.7;
+}
+
+/* ---------- 编辑区排版 ---------- */
+.je-editor-area .tiptap h1 { font-size: 2em;    font-weight: bold; margin-bottom: 0.5em; }
+.je-editor-area .tiptap h2 { font-size: 1.5em;  font-weight: bold; margin-bottom: 0.5em; }
+.je-editor-area .tiptap h3 { font-size: 1.25em; font-weight: bold; margin-bottom: 0.5em; }
+.je-editor-area .tiptap p  { margin-bottom: 0.8em; line-height: 1.7; }
+.je-editor-area .tiptap ul { list-style-type: disc;    padding-left: 1.5em; margin-bottom: 0.8em; }
+.je-editor-area .tiptap ol { list-style-type: decimal;  padding-left: 1.5em; margin-bottom: 0.8em; }
+
+/* ---------- 滚动条 ---------- */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
+
+/* ---------- 图片节点 ---------- */
+.image-node-wrapper {
+    display: inline-block;
+    position: relative;
+    line-height: 0;
+    cursor: default;
+    user-select: none;
+}
+
+.image-node-wrapper img {
+    display: block;
+    max-width: 100%;
+    border-radius: 2px;
+    border: 2px solid transparent;
+    transition: border-color 0.15s;
+}
+
+.image-node-wrapper.is-selected img {
+    border-color: var(--je-blue);
+}
+
+.image-resize-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: var(--je-blue);
+    border-radius: 50%;
+    z-index: 10;
+    display: none;
+}
+
+.image-node-wrapper.is-selected .image-resize-handle {
+    display: block;
+}
+
+.image-resize-handle[data-corner="tl"] { top: -5px;    left: -5px;   cursor: nwse-resize; }
+.image-resize-handle[data-corner="tr"] { top: -5px;    right: -5px;  cursor: nesw-resize; }
+.image-resize-handle[data-corner="bl"] { bottom: -5px; left: -5px;   cursor: nesw-resize; }
+.image-resize-handle[data-corner="br"] { bottom: -5px; right: -5px;  cursor: nwse-resize; }
