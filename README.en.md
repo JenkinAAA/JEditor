@@ -1,10 +1,12 @@
 # JEditor
 
+Language: English | [中文](README.md)
+
 Current version: v1.0.0
 
 Lightweight rich-text editor built on Tiptap, with a plugin-driven toolbar and a simple DOM API (`JEditor.create`). ESM / Vite is prioritized today; a fully self-contained CDN / UMD bundle is planned for the next releases.
 
-![Screenshot](img.png)
+![Screenshot](Demo/img.png)
 
 ---
 
@@ -81,4 +83,3 @@ Peer dependencies you must install:
 
 ## License
 MIT
-

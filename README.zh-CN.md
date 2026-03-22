@@ -1,10 +1,12 @@
 # JEditor
 
+Language: [English](README.en.md) | 中文
+
 当前版本：v1.0.0
 
 轻量富文本编辑器，基于 Tiptap，采用插件驱动的工具栏设计，并提供简单的 DOM API（`JEditor.create`）。当前优先支持 ESM / Vite 方式；完整的 CDN / UMD 自包含包将在后续版本补全。
 
-![示例截图](img.png)
+![示例截图](Demo/img.png)
 
 ---
 
