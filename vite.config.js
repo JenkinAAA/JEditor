@@ -1,6 +1,16 @@
-import { defineConfig } from 'vite'
+const externalDeps = [
+    '@tiptap/core',
+    '@tiptap/extension-code-block-lowlight',
+    '@tiptap/starter-kit',
+    '@tiptap/extension-underline',
+    '@tiptap/extension-image',
+    '@tiptap/extension-link',
+    '@tiptap/extension-table',
+    'lowlight',
+    '@tiptap/pm',
+]
 
-export default defineConfig({
+export default {
     root: '.',
     server: {
         port: 3000,
@@ -10,29 +20,13 @@ export default defineConfig({
         lib: {
             entry: 'src/index.js',
             name: 'JEditor',
-            formats: ['es', 'umd'],
-            fileName: (format) => `jeditor.${format}.js`,
+            formats: ['es'],
+            fileName: () => 'jeditor.es.js',
         },
         rollupOptions: {
-            // Tiptap / ProseMirror 作为 peerDependency 不打入包
-            external: [
-                '@tiptap/core',
-                '@tiptap/starter-kit',
-                '@tiptap/extension-underline',
-                '@tiptap/extension-image',
-                '@tiptap/pm',
-            ],
-            output: {
-                globals: {
-                    '@tiptap/core': 'TiptapCore',
-                    '@tiptap/starter-kit': 'StarterKit',
-                    '@tiptap/extension-underline': 'TiptapUnderline',
-                    '@tiptap/extension-image': 'TiptapImage',
-                    '@tiptap/pm': 'TiptapPM',
-                },
-            },
+            external: externalDeps,
         },
         outDir: 'dist',
         cssFileName: 'jeditor',
     },
-})
+}

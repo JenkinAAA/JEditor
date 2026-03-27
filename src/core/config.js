@@ -1,59 +1,63 @@
-// src/core/config.js
-
-/**
- * JEditor 默认配置
- *
- * toolbar: 二维数组，外层 = 行，内层 = 按钮名 / '|' 分隔线 / '->' 弹性留白
- */
 export const defaultConfig = {
-    placeholder: '开始在此编写文档...',
-
+    placeholder: 'Start writing...',
     toolbar: [
-        // ---- 第一行：功能区（白色） ----
         [
             'undo', 'redo',
             '|',
             'insertImage', 'insert',
             '|',
-            'attachment', 'table', 'link', 'mention',
-            '|',
-            'more',
+            'attachment', 'mention',
             '->',
             'fullscreen',
         ],
-        // ---- 第二行：格式区（灰色圆角） ----
         [
+            'formatPainter', 'clearFormat',
+            '|',
             'heading',
             '|',
-            'fontFamily',
+            'fontFamily', 'fontSize',
             '|',
-            'fontSizeDown', 'fontSize', 'fontSizeUp',
+            'bold', 'italic', 'underline', 'strike',
             '|',
-            'bold', 'italic', 'underline', 'strike', 'clearFormat',
+            'textColor', 'callout',
             '|',
-            'textColor', 'highlight',
+            'bulletList', 'orderedList', 'align', 'lineHeight',
             '|',
-            'bulletList', 'orderedList', 'alignLeft', 'alignCenter', 'alignRight', 'lineHeight',
+            'inlineCode', 'codeBlock',
             '|',
-            'blockquote', 'codeBlock',
+            'more',
+            '->',
+            'source',
         ],
     ],
-
-    // 各 plugin 独立配置
     image: {
         maxSize: 20 * 1024 * 1024,
         uploadUrl: null,
         accept: 'image/png,image/jpeg,image/gif,image/webp,image/svg+xml',
     },
+    source: {},
+    htmlPreservation: {},
+    more: {},
 }
 
-/**
- * 合并用户配置与默认配置
- */
 export function mergeConfig(userConfig = {}) {
     const merged = { ...defaultConfig, ...userConfig }
+
     if (userConfig.image) {
         merged.image = { ...defaultConfig.image, ...userConfig.image }
     }
+
+    if (userConfig.source) {
+        merged.source = { ...defaultConfig.source, ...userConfig.source }
+    }
+
+    if (userConfig.htmlPreservation) {
+        merged.htmlPreservation = { ...defaultConfig.htmlPreservation, ...userConfig.htmlPreservation }
+    }
+
+    if (userConfig.more) {
+        merged.more = { ...defaultConfig.more, ...userConfig.more }
+    }
+
     return merged
 }

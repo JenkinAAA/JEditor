@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JEditor CDN Demo</title>
+    <link rel="stylesheet" href="../dist/jeditor.css">
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body style="margin:0;background:#f2f2f2;font-family:Arial,sans-serif;">
+    <div style="max-width:1200px;margin:40px auto;padding:0 16px;">
+        <div id="cdn-editor">
+            <h2>CDN bootstrap</h2>
+            <p>This block is parsed from native HTML without Vite.</p>
+            <p>After building, open this file and load <code>../dist/jeditor.iife.js</code>.</p>
+        </div>
+    </div>
+
+    <script src="../dist/jeditor.iife.js"></script>
+    <script>
+        window.editor = window.JEditor.create('#cdn-editor')
+    </script>
+</body>
+</html>

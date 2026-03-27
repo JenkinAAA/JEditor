@@ -60,7 +60,7 @@ export class PluginManager {
     getTiptapExtensions() {
         return this.getAll()
             .filter((p) => p.tiptapExtension != null)
-            .map((p) => p.tiptapExtension)
+            .flatMap((p) => (Array.isArray(p.tiptapExtension) ? p.tiptapExtension : [p.tiptapExtension]))
     }
 
     /**
@@ -69,7 +69,8 @@ export class PluginManager {
     initAll(editor, config = {}) {
         this.getAll().forEach((p) => {
             if (typeof p.init === 'function') {
-                p.init(editor, config[p.name] || {})
+                const configKey = p.configKey || p.name
+                p.init(editor, config[configKey] || {})
             }
         })
     }

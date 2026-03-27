@@ -1,11 +1,11 @@
-// src/plugins/italic.js
+import { ICONS } from './shared/icon-set.js'
+
 export default {
     name: 'italic',
     toolbar: {
-        text: 'I',
+        icon: ICONS.italic,
         title: '斜体',
         shortcut: 'Ctrl+I',
-        className: 'italic',
     },
     tiptapExtension: null,
     command: (editor) => editor.chain().focus().toggleItalic().run(),

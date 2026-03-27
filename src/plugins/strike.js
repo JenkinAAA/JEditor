@@ -1,13 +1,13 @@
-// src/plugins/strike.js
+import { ICONS } from './shared/icon-set.js'
+
 export default {
     name: 'strike',
     toolbar: {
-        text: 'S',
+        icon: ICONS.strike,
         title: '删除线',
         shortcut: 'Ctrl+Shift+X',
-        className: 'line-through text-[13px]',
     },
-    tiptapExtension: null, // StarterKit 内置
+    tiptapExtension: null,
     command: (editor) => editor.chain().focus().toggleStrike().run(),
     isActive: (editor) => editor.isActive('strike'),
 }

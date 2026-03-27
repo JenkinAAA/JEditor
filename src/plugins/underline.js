@@ -1,13 +1,12 @@
-// src/plugins/underline.js
 import Underline from '@tiptap/extension-underline'
+import { ICONS } from './shared/icon-set.js'
 
 export default {
     name: 'underline',
     toolbar: {
-        text: 'U',
+        icon: ICONS.underline,
         title: '下划线',
         shortcut: 'Ctrl+U',
-        className: 'underline',
     },
     tiptapExtension: Underline,
     command: (editor) => editor.chain().focus().toggleUnderline().run(),

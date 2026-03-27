@@ -1,49 +1,65 @@
 {
   "name": "@jenkin-a/jeditor",
-  "version": "1.0.0",
-  "description": "JEditor - 腾讯系办公风格富文本编辑器",
+  "version": "1.0.8",
+  "description": "JEditor rich-text editor built on Tiptap.",
   "type": "module",
   "main": "dist/jeditor.umd.js",
   "module": "dist/jeditor.es.js",
+  "unpkg": "dist/jeditor.iife.js",
+  "jsdelivr": "dist/jeditor.iife.js",
+  "style": "dist/jeditor.css",
   "exports": {
     ".": {
       "import": "./dist/jeditor.es.js",
       "require": "./dist/jeditor.umd.js"
     },
-    "./dist/jeditor.css": "./dist/jeditor.css"
+    "./dist/jeditor.css": "./dist/jeditor.css",
+    "./dist/jeditor.iife.js": "./dist/jeditor.iife.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "README.en.md",
+    "Demo"
   ],
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && vite build --config vite.browser.config.js",
     "preview": "vite preview"
   },
   "keywords": [
     "editor",
     "rich-text",
     "tiptap",
-    "wysiwyg"
+    "wysiwyg",
+    "html-editor"
   ],
   "author": "jenkin",
   "license": "MIT",
   "peerDependencies": {
     "@tiptap/core": "^3.0.0",
-    "@tiptap/starter-kit": "^3.0.0",
-    "@tiptap/extension-underline": "^3.0.0",
+    "@tiptap/extension-code-block-lowlight": "^3.0.0",
     "@tiptap/extension-image": "^3.0.0",
-    "@tiptap/pm": "^3.0.0"
+    "@tiptap/extension-link": "^3.0.0",
+    "@tiptap/extension-table": "^3.0.0",
+    "@tiptap/extension-underline": "^3.0.0",
+    "@tiptap/pm": "^3.0.0",
+    "@tiptap/starter-kit": "^3.0.0",
+    "lowlight": "^3.3.0"
   },
   "devDependencies": {
     "@tiptap/core": "^3.20.4",
+    "@tiptap/extension-code-block-lowlight": "^3.20.4",
     "@tiptap/extension-image": "^3.20.4",
+    "@tiptap/extension-link": "^3.20.4",
+    "@tiptap/extension-table": "^3.20.4",
     "@tiptap/extension-underline": "^3.20.4",
     "@tiptap/pm": "^3.20.4",
     "@tiptap/starter-kit": "^3.20.4",
+    "lowlight": "^3.3.0",
     "vite": "^8.0.1"
   }
 }

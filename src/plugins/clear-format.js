@@ -1,8 +1,9 @@
-// src/plugins/clear-format.js
+import { ICONS } from './shared/icon-set.js'
+
 export default {
     name: 'clearFormat',
     toolbar: {
-        icon: 'slash',       // feather icon name
+        icon: ICONS.clearFormat,
         title: '清除格式',
     },
     tiptapExtension: null,

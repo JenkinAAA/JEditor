@@ -3,15 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JEditor - Demo</title>
+    <title>JEditor Demo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/feather-icons"></script>
 </head>
-<body class="bg-[#f2f2f2] min-h-screen">
-
-    <!-- 用户只需提供一个空容器 -->
-    <div class="max-w-[1440px] mx-auto my-12">
-        <div id="j-editor-container"></div>
+<body class="min-h-screen bg-[#f2f2f2]">
+    <div class="mx-auto my-12 max-w-[1440px] px-4">
+        <div id="j-editor-container">
+            <h2>JEditor v1.0.2</h2>
+            <p>This content is plain HTML inside the container before initialization.</p>
+            <p>v1.0.2 adds format painter, heading, font family, and color popovers.</p>
+            <ul>
+                <li>Native HTML bootstrap</li>
+                <li>ESM usage for app projects</li>
+                <li>Bundled CDN/IIFE output for browsers</li>
+            </ul>
+        </div>
     </div>
 
     <script type="module" src="/src/main.js"></script>
