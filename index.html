@@ -1,26 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JEditor Demo</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JEditor | Dev Playground</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/feather-icons"></script>
-</head>
-<body class="min-h-screen bg-[#f2f2f2]">
-    <div class="mx-auto my-12 max-w-[1440px] px-4">
-        <div id="j-editor-container">
-            <h2>JEditor v1.0.2</h2>
-            <p>This content is plain HTML inside the container before initialization.</p>
-            <p>v1.0.2 adds format painter, heading, font family, and color popovers.</p>
-            <ul>
-                <li>Native HTML bootstrap</li>
-                <li>ESM usage for app projects</li>
-                <li>Bundled CDN/IIFE output for browsers</li>
-            </ul>
-        </div>
+    <style>
+      body {
+        margin: 0;
+        background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen text-slate-800">
+    <div class="mx-auto my-10 max-w-[1200px] px-4">
+      <div
+        class="mb-8 rounded-2xl border border-slate-200/50 bg-white/70 p-6 shadow-xl shadow-slate-200/50 backdrop-blur-xl"
+      >
+        <h1
+          class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-3xl font-bold text-transparent"
+        >
+          JEditor Playground
+        </h1>
+        <p class="mt-2 text-slate-500">
+          本地开发沙盒，Vite 将自动监听 <code>src/</code> 目录下的更改并热重载更新。
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div id="j-editor-container"></div>
+      </div>
     </div>
 
     <script type="module" src="/src/main.js"></script>
-</body>
+  </body>
 </html>

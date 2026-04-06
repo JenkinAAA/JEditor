@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JEditor Local Build Demo</title>
+    <link rel="stylesheet" href="../dist/jeditor.css" />
+    <style>
+      body {
+        margin: 0;
+        background: #f8fafc;
+        color: #0f172a;
+        font:
+          14px/1.7 -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          Roboto,
+          'Helvetica Neue',
+          Arial,
+          'PingFang SC',
+          'Microsoft YaHei',
+          sans-serif;
+      }
+      .demo-shell {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 0 20px 60px;
+      }
+      .demo-intro {
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      .demo-intro h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+        line-height: 1.2;
+        color: #1e293b;
+      }
+      .demo-intro p {
+        margin: 0;
+        color: #475569;
+      }
+      .demo-editor-wrapper {
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="demo-shell">
+      <div class="demo-intro">
+        <h1>JEditor Local Build Demo</h1>
+        <p>本页使用本地构建产物加载，适合在执行 <code>npm run build</code> 之后直接打开查看。</p>
+      </div>
+
+      <div class="demo-editor-wrapper">
+        <div id="npm-editor">
+          <h2>JEditor 1.2.1 Feature Showcase</h2>
+          <p>
+            这是一个面向 <strong>富文本编辑</strong>、<strong>Source HTML 编辑</strong> 和
+            <strong>第三方 HTML 高保真输出</strong> 的混合编辑器。
+          </p>
+
+          <div
+            data-callout=""
+            data-callout-type="tip"
+            data-callout-title="Release Focus"
+            data-callout-color="#0f766e"
+            data-callout-bg="#ecfeff"
+            class="je-callout"
+            style="
+              margin: 12px 0;
+              padding: 14px 16px 16px;
+              border-radius: 14px;
+              background: #ecfeff;
+              color: #0f766e;
+              border: 1px solid rgba(15, 118, 110, 0.12);
+            "
+          >
+            <div
+              class="je-callout-header"
+              contenteditable="false"
+              style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 12px;
+                user-select: none;
+              "
+            >
+              <span
+                class="je-callout-title"
+                style="font-size: 14px; font-weight: 700; color: inherit"
+                >Release Focus</span
+              >
+            </div>
+            <div class="je-callout-body" style="min-height: 24px; color: inherit">
+              <p>
+                1.2.1 重点升级了 <code>table</code>、<code>code block</code>、<code>callout</code>
+                的高保真能力，并补齐了 PDF 导出、拖拽手柄与 source 往返稳定性。
+              </p>
+            </div>
+          </div>
+
+          <h3>Markdown-Friendly Blocks</h3>
+          <table>
+            <tbody>
+              <tr>
+                <th>能力</th>
+                <th>快捷键 / Input Rule</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>各级标题</td>
+                <td><code>#</code> 到 <code>######</code> ＋ 空格</td>
+                <td>分别对应 H1 - H6 级别的标题。</td>
+              </tr>
+              <tr>
+                <td>区块引用</td>
+                <td><code>&gt;</code> ＋ 空格</td>
+                <td>调出 blockquote 引用区块。</td>
+              </tr>
+              <tr>
+                <td>分隔符</td>
+                <td><code>---</code> ＋ 回车</td>
+                <td>快速插入一条水平分割线 (divide)。</td>
+              </tr>
+              <tr>
+                <td>代码块</td>
+                <td><code>```</code> ＋ 语言 ＋ 空格</td>
+                <td>快速载入支持语法高亮的代码区块。</td>
+              </tr>
+              <tr>
+                <td>行内代码</td>
+                <td><code>`代码文字`</code></td>
+                <td>快速标记行内代码 (inlinecode)。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Block 展示区</h3>
+          <p>以下是使用上述语法实际生成的节点展示，您可随意删改尝试：</p>
+
+          <blockquote>
+            <p>这是一个引用，在空行键入 <code>&gt;</code> 后跟空格即可触发。</p>
+          </blockquote>
+
+          <p>这是一个分隔符：</p>
+          <hr />
+
+          <p>这是一段包含 <code>inlinecode</code> 的测试文字。</p>
+
+          <h3>Common Shortcuts</h3>
+          <table>
+            <tbody>
+              <tr>
+                <th>操作</th>
+                <th>快捷键</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>粗体</td>
+                <td><code>Ctrl/Cmd + B</code></td>
+                <td>切换加粗。</td>
+              </tr>
+              <tr>
+                <td>斜体</td>
+                <td><code>Ctrl/Cmd + I</code></td>
+                <td>切换斜体。</td>
+              </tr>
+              <tr>
+                <td>下划线</td>
+                <td><code>Ctrl/Cmd + U</code></td>
+                <td>切换下划线。</td>
+              </tr>
+              <tr>
+                <td>退出 Callout</td>
+                <td><code>Enter</code></td>
+                <td>在空段落尾部回车可快速跳出 callout。</td>
+              </tr>
+              <tr>
+                <td>打开链接</td>
+                <td><code>Ctrl/Cmd + Click</code></td>
+                <td>普通点击仅用于选中和编辑链接。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Code Block</h3>
+          <div
+            data-jeditor-code-block=""
+            data-code-language="javascript"
+            class="je-code-block-wrap"
+            style="
+              margin: 1em 0;
+              border-radius: 12px;
+              border: 1px solid #d0d7de;
+              background: #ffffff;
+              overflow: hidden;
+              position: relative;
+            "
+          >
+            <div
+              class="je-code-block-header"
+              contenteditable="false"
+              style="
+                display: flex;
+                align-items: center;
+                min-height: 34px;
+                padding: 0 12px;
+                background: #f6f8fa;
+                color: #6b7280;
+                font-size: 12px;
+                font-family:
+                  -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+                  'PingFang SC', 'Microsoft YaHei', sans-serif;
+                border-bottom: 1px solid #e5e7eb;
+                box-sizing: border-box;
+              "
+            >
+              <span
+                class="je-code-block-language"
+                style="
+                  display: inline-flex;
+                  align-items: center;
+                  min-height: 34px;
+                  font-size: 12px;
+                  font-weight: 500;
+                  color: #6b7280;
+                "
+                >JavaScript</span
+              >
+            </div>
+            <pre
+              style="
+                margin: 0;
+                padding: 12px 16px 16px;
+                background: transparent;
+                overflow-x: auto;
+                box-sizing: border-box;
+              "
+            ><code class="language-javascript" style="display:block;padding:0;border:none;background:transparent;color:#24292e;font-weight:400;font-family:&quot;JetBrains Mono&quot;,&quot;SFMono-Regular&quot;,Consolas,monospace;font-size:13px;line-height:1.6;white-space:pre;box-shadow:none;">const editor = JEditor.create('#demo', {
+  placeholder: 'Write once, keep the HTML alive.',
+})
+
+editor.exportPDF()</code></pre>
+          </div>
+
+          <h3>AI Prompt Keywords For Static Fragment HTML</h3>
+          <div
+            data-callout=""
+            data-callout-type="warning"
+            data-callout-title="Prompt Tips"
+            data-callout-color="#b45309"
+            data-callout-bg="#fffbeb"
+            class="je-callout"
+            style="
+              margin: 12px 0;
+              padding: 14px 16px 16px;
+              border-radius: 14px;
+              background: #fffbeb;
+              color: #b45309;
+              border: 1px solid rgba(180, 83, 9, 0.12);
+            "
+          >
+            <div
+              class="je-callout-header"
+              contenteditable="false"
+              style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 12px;
+                user-select: none;
+              "
+            >
+              <span
+                class="je-callout-title"
+                style="font-size: 14px; font-weight: 700; color: inherit"
+                >Prompt Tips</span
+              >
+            </div>
+            <div class="je-callout-body" style="min-height: 24px; color: inherit">
+              <p>
+                如果你要让 AI 生成一个可以直接贴进 JEditor 或第三方系统的静态 fragment
+                HTML，建议提示词里至少包含这些关键词：
+              </p>
+              <ul>
+                <li><code>self-contained fragment html</code></li>
+                <li><code>inline styles only</code></li>
+                <li><code>email-safe layout</code></li>
+                <li><code>no external scripts</code></li>
+                <li><code>max-width container</code></li>
+                <li><code>semantic headings and tables</code></li>
+                <li><code>callout card section</code></li>
+                <li><code>code block with language label</code></li>
+                <li><code>copy-paste friendly output</code></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../dist/jeditor.iife.js"></script>
+    <script>
+      window.editor = window.JEditor.create('#npm-editor', {
+        placeholder: 'Start creating...',
+      })
+    </script>
+  </body>
+</html>

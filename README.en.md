@@ -1,188 +1,131 @@
 # JEditor
 
-Language: English | [中文](README.md)
+Language: English | [中文](https://github.com/JenkinAAA/JEditor/blob/master/README.md)
 
-Open source repository: [https://github.com/JenkinAAA/JEditor](https://github.com/JenkinAAA/JEditor)
+Repository: [JenkinAAA/JEditor](https://github.com/JenkinAAA/JEditor)
 
-Current version: `v1.0.8`
+Current version: `v1.2.1`
 
-JEditor is a web rich text editor for document authoring, static HTML fragment editing, and Source HTML editing. It is built on top of Tiptap, but the current version is no longer just a toolbar wrapper. It is evolving into a hybrid editor that supports visual editing, source editing, HTML preservation, and direct CDN usage.
+**✨ Live Demos:**
+- [👉 CDN Demo (Standalone environment)](./Demo/cdn.html)
+- [👉 Local Build Demo (NPM environment)](./Demo/npm.html)
 
-![JEditor Screenshot](Demo/img.png)
+JEditor is a hybrid editor built on Tiptap for:
 
-## Goals
+- visual rich-text editing
+- source HTML editing
+- high-fidelity HTML preservation
+- direct browser and CDN usage
 
-JEditor is not trying to simply clone a traditional rich text editor. Its core goal is harder:
+It is designed for teams that need both document-style editing and reliable HTML round-tripping.
 
-`Let users edit content like a document while preserving raw HTML as much as possible.`
+![JEditor Screenshot](https://raw.githubusercontent.com/JenkinAAA/JEditor/master/Demo/img.png)
 
-That is the key difference between JEditor and conventional editors:
+Image source: [Demo/img.png](https://github.com/JenkinAAA/JEditor/blob/master/Demo/img.png)
 
-- most editors focus on structured content only
-- JEditor cares about both structured editing and HTML survivability
+## What's New In v1.2.1
 
-## Current capabilities
+This is a maintenance release focused on bug fixes and demo improvements:
+- **Bug Fix**: Fixed a crucial issue where the HTML formatter was breaking `white-space: pre` alignment by forcefully applying indents and line breaks inside `<pre><code>` blocks, causing rendered HTML out in third-party containers to misalign.
+- **Bug Fix**: Fixed the fullscreen UI toggle button not syncing properly upon returning from fullscreen.
+- **Enhancement**: Overhauled the internal `Demo/` showcase layout and updated code snippets for much better visual representation.
 
-The current version already includes:
+---
 
-- dual-toolbar editing UI
-- native HTML bootstrap from a container
-- `textarea` bootstrap with automatic sync
-- ESM / UMD / IIFE builds
-- direct CDN integration without npm
-- Source toggle button
-- source editor on the left and high-fidelity preview on the right
-- full HTML document preservation
-- fragment HTML preprocess and restore flow
-- Raw HTML Block placeholders
-- core editing features:
-  - undo / redo
-  - format painter
-  - clear format
-  - heading / paragraph
-  - font family / font size
-  - bold / italic / underline / strike
-  - color
-  - blockquote
-  - inline code
-  - code block
-  - lists
-  - link
-  - table
-  - image
-  - callout
-  - fullscreen
+## What's New In v1.2.0
 
-## Current severe bugs
+This release is a major upgrade from the original `1.0.x` line.
 
-These are planned to be addressed in the next version, targeted before `2026.06`.
+- rebuilt table interactions:
+  - full table drag handle
+  - row / column action controls
+  - bottom-right resize handle
+  - row-height persistence
+  - safer source/visual round-trip handling
+- rebuilt code block fidelity:
+  - high-fidelity source HTML output
+  - third-party HTML rendering support
+  - syntax-highlight markup export
+  - safe source-to-visual re-entry
+- improved callout and table source fidelity for third-party HTML environments
+- source mode enhancements:
+  - better raw HTML preservation heuristics
+  - high-fidelity iframe preview for preserved blocks
+- new Export PDF / Print action in the primary toolbar
+- link behavior optimized for editing:
+  - normal click selects the link
+  - `Ctrl` / `Cmd + Click` opens it
+- drag handles added for blockquote, divider, and code block
+- multiple visual and interaction bug fixes across heading, strike, source preview, and toolbar flows
 
-- Table styling still has readability and editing issues in real document scenarios
-- Table interaction logic is still unstable, especially handles, resizing, and dragging
-- Callout focus handling and interaction logic still have defects that affect usability
+## Core Ideas
 
-For other bugs, please open an [Issue](https://github.com/JenkinAAA/JEditor/issues).
+JEditor treats source HTML as the canonical representation whenever possible.
 
-## Architecture overview
-
-JEditor follows a hybrid architecture centered around “Source HTML as the single source of truth”:
+The editor flow is:
 
 ```text
 Source HTML
-   -> Parser / Preprocess
-   -> Projection
-   -> Visual Editor (Tiptap)
-   -> restoreRawHTML()
-   -> Output HTML
+  -> preprocessHTML()
+  -> visual projection
+  -> Tiptap editing
+  -> restoreRawHTML()
+  -> output HTML
 ```
 
-You can think of it as three layers:
+This makes JEditor suitable for scenarios where unsupported or complex HTML must survive editing.
 
-1. Source Layer
-   - stores the original HTML
-   - keeps full documents source-authoritative
-   - powers the high-fidelity preview
+## Main Features
 
-2. Projection Layer
-   - preprocesses HTML before `setContent`
-   - sends supported nodes into the schema
-   - wraps unknown nodes as `RawHtmlIsland`
+- dual-toolbar editor UI
+- visual mode and source mode
+- raw HTML preservation for unsupported blocks
+- full HTML document support
+- rich-text features:
+  - heading / paragraph
+  - font family / font size
+  - bold / italic / underline / strike
+  - text color
+  - alignment / line height
+  - bullet and ordered lists
+  - blockquote
+  - inline code
+  - code block
+  - link
+  - image
+  - callout
+  - table
+- browser print / save as PDF
+- ESM / UMD / IIFE builds
+- CDN usage without npm
 
-3. Visual Layer
-   - uses Tiptap for structured editing
-   - all toolbar, plugin, command, and selection logic lives here
+## High-Fidelity HTML Strategy
 
-## Three editing states
+JEditor uses a dual-shape strategy for advanced blocks:
 
-### 1. Visual Mode
+- source HTML keeps a high-fidelity exported shape suitable for third-party HTML environments
+- visual mode uses an internal shape that is safer for ProseMirror/Tiptap to edit
+- the editor converts between those shapes during source/visual transitions
 
-This is the default mode. It is used for structured editing such as writing paragraphs, formatting text, inserting tables, callouts, images, and code blocks.
+This is currently applied most strongly to:
 
-This layer mainly depends on Tiptap for:
+- code block
+- callout
+- table
 
-- selection handling
-- command chains
-- schema
-- history
-- node and mark extensions
+## Install
 
-### 2. Source Mode
+```bash
+npm install @jenkin-a/jeditor
+```
 
-Enter it by clicking the `Source` button.
-
-The current implementation is:
-
-- left: source editor `textarea`
-- right: high-fidelity iframe preview
-
-When the content is a full HTML document, JEditor does not force it back through the visual editor. This avoids losing or normalizing:
-
-- `<!DOCTYPE html>`
-- `<head>`
-- `<style>`
-- `<script>`
-- the original document structure
-
-### 3. Hybrid / Preservation Flow
-
-This is currently the most important layer in JEditor.
-
-For fragment HTML, JEditor preprocesses content before `setContent()`:
-
-- supported nodes are parsed normally
-- unsupported nodes are wrapped as `raw-html` placeholders
-
-When exporting, `restoreRawHTML()` turns them back into their original HTML.
-
-The goal is simple:
-
-`Unknown HTML may not be editable, but it must not be deleted.`
-
-## HTML preservation
-
-The current HTML preservation flow can be understood in three simple steps:
-
-1. `preprocessHTML`
-   - runs before `setContent()`
-   - supported nodes go into the visual editor
-   - unsupported nodes are converted into `raw-html`
-
-2. `RawHtmlIsland`
-   - acts as an indivisible block node
-   - preserves original HTML instead of forcing it into a structured schema
-
-3. `restoreRawHTML`
-   - runs during `getHTML()`
-   - restores `raw-html` placeholders back to their original `outerHTML`
-
-This means that even if some HTML cannot be edited visually, it can still survive export as intact HTML.
-
-## Plugin system
-
-JEditor uses a plugin-driven toolbar and command architecture.
-
-A plugin usually contains:
-
-- `name`
-- `toolbar`
-- `tiptapExtension`
-- `command`
-- `isActive`
-- `renderPopover`
-- `init / destroy`
-
-This gives JEditor a few advantages:
-
-- UI and commands stay decoupled
-- toolbar items can be composed by configuration
-- new tools can be added without rewriting the core editor
-
-## Install and development
+## Development
 
 ```bash
 npm install
 npm run dev
 npm run build
+npm test
 npm run preview
 ```
 
@@ -193,7 +136,11 @@ Build outputs:
 - `dist/jeditor.iife.js`
 - `dist/jeditor.css`
 
-## ESM usage
+Release checklist:
+
+- `docs/release-checklist.md`
+
+## ESM Usage
 
 ```js
 import '@jenkin-a/jeditor/dist/jeditor.css'
@@ -204,18 +151,17 @@ const editor = JEditor.create('#editor', {
 })
 ```
 
-You can also create from an HTML string:
+You can also bootstrap from an HTML string:
 
 ```js
 const editor = JEditor.fromHTML('#editor', '<h2>Hello</h2><p>World</p>')
 ```
 
-## CDN / no-npm usage
+## CDN Usage
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@jenkin-a/jeditor@1.0.8/dist/jeditor.css">
-<script src="https://unpkg.com/feather-icons"></script>
-<script src="https://unpkg.com/@jenkin-a/jeditor@1.0.8/dist/jeditor.iife.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@jenkin-a/jeditor@1.2.1/dist/jeditor.css" />
+<script src="https://unpkg.com/@jenkin-a/jeditor@1.2.1/dist/jeditor.iife.js"></script>
 
 <div id="editor">
   <h2>Hello, JEditor</h2>
@@ -240,28 +186,24 @@ editor.importHTML('<p>Hello</p>')
 editor.focus()
 editor.destroy()
 editor.toggleSourceMode()
+editor.exportPDF()
 ```
 
-## Good fit for
+## Good Fit For
 
-JEditor is a good fit for:
+- knowledge-base editors
+- documentation systems
+- source-aware CMS editors
+- admin tools that need both WYSIWYG and HTML editing
+- HTML email or fragment workflows
+- browser integrations that prefer CDN delivery
 
-- enterprise knowledge-base editors
-- SOP / notice / documentation workbenches
-- CMS editors that need Source HTML support
-- admin systems that need both visual editing and HTML editing
-- lightweight browser integrations via CDN
+## Known Boundaries
 
-## Current boundaries
-
-The current version is already strong, but it is still evolving.
-
-Some current boundaries:
-
-- some UI details still need polishing
-- a few toolbar interactions can be refined further
-- complex unknown inline HTML preservation is not final yet
-- Source Mode and Hybrid Mode will continue to evolve
+- there is still no automated test suite in the repository
+- some HTML preservation rules are heuristic and may need tuning for niche markup
+- very large documents with many preserved or high-fidelity blocks may feel heavy in source/visual switching
+- PDF export currently uses the browser print flow, so "Save as PDF" depends on the user agent
 
 ## License
 

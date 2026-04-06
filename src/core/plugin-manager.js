@@ -1,87 +1,86 @@
-// src/core/plugin-manager.js
-
 /**
- * Plugin 统一接口定义（JSDoc）
- *
  * @typedef {Object} JPlugin
- * @property {string}            name            - 唯一标识，与 data-command 一致
- * @property {Object}            toolbar         - 工具栏按钮描述
- * @property {string|null}       toolbar.icon    - SVG 字符串 / feather 图标名 / null
- * @property {string|null}       toolbar.text    - 按钮文字（icon 为空时使用）
- * @property {string}            toolbar.title   - tooltip 提示
- * @property {string|null}       toolbar.shortcut- 快捷键文字
- * @property {string|null}       toolbar.className- 额外 CSS class
- * @property {Object|null}       tiptapExtension - Tiptap Extension（已在 StarterKit 中的传 null）
- * @property {Function}          command         - (editor, pluginConfig) => void
- * @property {Function}          [isActive]      - (editor) => boolean
- * @property {Function}          [isDisabled]    - (editor) => boolean
- * @property {Function}          [init]          - (editor, pluginConfig) => void（编辑器就绪后调用）
- * @property {Function}          [destroy]       - () => void
+ * @property {string} name Unique plugin key, aligned with `data-command`.
+ * @property {Object} toolbar Toolbar button metadata.
+ * @property {string|null} [toolbar.icon] SVG markup for the button icon.
+ * @property {string|null} [toolbar.text] Button text when no icon is provided.
+ * @property {string} toolbar.title Tooltip text.
+ * @property {string|null} [toolbar.shortcut] Shortcut hint text.
+ * @property {string|null} [toolbar.className] Extra CSS class for the toolbar button.
+ * @property {Object|Object[]|null} [tiptapExtension] One or more Tiptap extensions exposed by the plugin.
+ * @property {(editor: any, pluginConfig?: Object) => void} command Execute the plugin action.
+ * @property {(editor: any) => boolean} [isActive] Return whether the plugin is active in the current selection.
+ * @property {(editor: any) => boolean} [isDisabled] Return whether the plugin action should be disabled.
+ * @property {(editor: any, pluginConfig?: Object) => void} [init] Initialize runtime side effects after editor creation.
+ * @property {(editor: any) => void} [destroy] Clean up runtime side effects before editor teardown.
  */
 
 export class PluginManager {
-    constructor() {
-        /** @type {Map<string, JPlugin>} */
-        this._plugins = new Map()
-    }
+  constructor() {
+    /** @type {Map<string, JPlugin>} */
+    this._plugins = new Map()
+  }
 
-    /**
-     * 注册一个 plugin
-     */
-    register(plugin) {
-        if (!plugin.name) throw new Error('[JEditor] Plugin 缺少 name 字段')
-        this._plugins.set(plugin.name, plugin)
-    }
+  /**
+   * Register a single plugin instance.
+   */
+  register(plugin) {
+    if (!plugin.name) throw new Error('[JEditor] Plugin is missing a name field.')
+    this._plugins.set(plugin.name, plugin)
+  }
 
-    /**
-     * 批量注册
-     */
-    registerAll(plugins) {
-        plugins.forEach((p) => this.register(p))
-    }
+  /**
+   * Register multiple plugins in order.
+   */
+  registerAll(plugins) {
+    plugins.forEach((plugin) => this.register(plugin))
+  }
 
-    /**
-     * 按 name 取 plugin
-     */
-    get(name) {
-        return this._plugins.get(name)
-    }
+  /**
+   * Get a plugin by name.
+   */
+  get(name) {
+    return this._plugins.get(name)
+  }
 
-    /**
-     * 返回所有已注册的 plugin
-     */
-    getAll() {
-        return Array.from(this._plugins.values())
-    }
+  /**
+   * Return all registered plugins.
+   */
+  getAll() {
+    return Array.from(this._plugins.values())
+  }
 
-    /**
-     * 收集所有 plugin 提供的 Tiptap Extension（用于创建 Editor）
-     */
-    getTiptapExtensions() {
-        return this.getAll()
-            .filter((p) => p.tiptapExtension != null)
-            .flatMap((p) => (Array.isArray(p.tiptapExtension) ? p.tiptapExtension : [p.tiptapExtension]))
-    }
+  /**
+   * Collect all Tiptap extensions exposed by registered plugins.
+   */
+  getTiptapExtensions() {
+    return this.getAll()
+      .filter((plugin) => plugin.tiptapExtension != null)
+      .flatMap((plugin) =>
+        Array.isArray(plugin.tiptapExtension) ? plugin.tiptapExtension : [plugin.tiptapExtension],
+      )
+  }
 
-    /**
-     * 编辑器就绪后，逐个调用 plugin.init()
-     */
-    initAll(editor, config = {}) {
-        this.getAll().forEach((p) => {
-            if (typeof p.init === 'function') {
-                const configKey = p.configKey || p.name
-                p.init(editor, config[configKey] || {})
-            }
-        })
-    }
+  /**
+   * Initialize runtime plugin hooks after the editor is created.
+   */
+  initAll(editor, config = {}) {
+    this.getAll().forEach((plugin) => {
+      if (typeof plugin.init !== 'function') return
+      const configKey = plugin.configKey || plugin.name
+      plugin.init(editor, config[configKey] || {})
+    })
+  }
 
-    /**
-     * 销毁所有 plugin
-     */
-    destroyAll() {
-        this.getAll().forEach((p) => {
-            if (typeof p.destroy === 'function') p.destroy()
-        })
-        this._plugins.clear()
-    }
+  /**
+   * Tear down all registered plugins and clear the registry.
+   */
+  destroyAll(editor) {
+    this.getAll().forEach((plugin) => {
+      if (typeof plugin.destroy === 'function') {
+        plugin.destroy(editor)
+      }
+    })
+    this._plugins.clear()
+  }
 }

@@ -1,0 +1,8 @@
+dist/
+node_modules/
+.idea/
+.claude/
+*.pdf
+*.png
+*.jpg
+*.gif

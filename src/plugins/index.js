@@ -8,6 +8,7 @@ export { default as clearFormat } from './clear-format.js'
 export { default as formatPainter } from './format-painter.js'
 export { default as insertImage } from './image/index.js'
 export { default as insert } from './insert.js'
+export { default as exportPdf } from './export-pdf.js'
 export { default as fullscreen } from './fullscreen.js'
 export { default as source } from './source.js'
 export { default as htmlPreservation } from './html-preservation.js'
@@ -37,6 +38,7 @@ import clearFormatPlugin from './clear-format.js'
 import formatPainterPlugin from './format-painter.js'
 import insertImagePlugin from './image/index.js'
 import insertPlugin from './insert.js'
+import exportPdfPlugin from './export-pdf.js'
 import fullscreenPlugin from './fullscreen.js'
 import sourcePlugin from './source.js'
 import htmlPreservationPlugin from './html-preservation.js'
@@ -60,35 +62,36 @@ import horizontalRulePlugin from './horizontal-rule.js'
 import { placeholderPlugins } from './placeholders.js'
 
 export const builtinPlugins = [
-    htmlPreservationPlugin,
-    horizontalRulePlugin,
-    undoPlugin,
-    redoPlugin,
-    formatPainterPlugin,
-    clearFormatPlugin,
-    insertPlugin,
-    morePlugin,
-    fullscreenPlugin,
-    sourcePlugin,
-    headingPlugin,
-    fontFamilyPlugin,
-    fontSizePlugin,
-    boldPlugin,
-    italicPlugin,
-    underlinePlugin,
-    strikePlugin,
-    textColorPlugin,
-    rawHtmlBlockPlugin,
-    calloutPlugin,
-    bulletListPlugin,
-    orderedListPlugin,
-    alignPlugin,
-    lineHeightPlugin,
-    blockquotePlugin,
-    inlineCodePlugin,
-    codeBlockPlugin,
-    linkPlugin,
-    tablePlugin,
-    insertImagePlugin,
-    ...placeholderPlugins,
+  htmlPreservationPlugin,
+  horizontalRulePlugin,
+  undoPlugin,
+  redoPlugin,
+  formatPainterPlugin,
+  clearFormatPlugin,
+  insertPlugin,
+  exportPdfPlugin,
+  morePlugin,
+  fullscreenPlugin,
+  sourcePlugin,
+  headingPlugin,
+  fontFamilyPlugin,
+  fontSizePlugin,
+  boldPlugin,
+  italicPlugin,
+  underlinePlugin,
+  strikePlugin,
+  textColorPlugin,
+  rawHtmlBlockPlugin,
+  calloutPlugin,
+  bulletListPlugin,
+  orderedListPlugin,
+  alignPlugin,
+  lineHeightPlugin,
+  blockquotePlugin,
+  inlineCodePlugin,
+  codeBlockPlugin,
+  linkPlugin,
+  tablePlugin,
+  insertImagePlugin,
+  ...placeholderPlugins,
 ]

@@ -1,188 +1,131 @@
 # JEditor
 
-Language: [English](README.en.md) | 中文
+语言：中文 | [English](https://github.com/JenkinAAA/JEditor/blob/master/README.en.md)
 
-开源仓库：[https://github.com/JenkinAAA/JEditor](https://github.com/JenkinAAA/JEditor)
+仓库地址：[JenkinAAA/JEditor](https://github.com/JenkinAAA/JEditor)
 
-当前版本：`v1.0.8`
+当前版本：`v1.2.1`
 
-JEditor 是一个面向文档写作、静态 HTML 片段编辑、Source HTML 编辑的 Web 富文本编辑器。它以 Tiptap 为基础，但当前版本已经不只是简单的工具栏封装，而是在此基础上演进成了一个同时支持可视化编辑、源码编辑、HTML 保活与 CDN 直连的混合编辑器。
+**✨ 快速体验测试环境：**
+- [👉 CDN 直连 Demo (适合独立环境)](./Demo/cdn.html)
+- [👉 本地构建 Demo (适合 NPM 环境)](./Demo/npm.html)
 
-![JEditor Screenshot](Demo/img.png)
+JEditor 是一个基于 Tiptap 的混合编辑器，面向以下场景：
 
-## 项目目标
+- 可视化富文本编辑
+- Source HTML 源码编辑
+- 高保真 HTML 保活与回写
+- 浏览器直连和 CDN 直接使用
 
-JEditor 的目标不是单纯复刻一个传统富文本编辑器，而是解决一个更难的问题：
+它适合既需要文档式编辑体验，又需要 HTML 往返稳定性的团队。
 
-`让用户既能像写文档一样编辑内容，又能尽可能保留和操作原始 HTML。`
+![JEditor 截图](https://raw.githubusercontent.com/JenkinAAA/JEditor/master/Demo/img.png)
 
-这也是 JEditor 与常规编辑器的核心差异：
+图片来源：[Demo/img.png](https://github.com/JenkinAAA/JEditor/blob/master/Demo/img.png)
 
-- 普通编辑器更强调“结构化内容”
-- JEditor 同时强调“结构化编辑体验”和“HTML 存活能力”
+## 1.2.1 更新内容
 
-## 当前能力
+本次为 bug 修复优化版本，带来了更为扎实的使用体验，主要包含以下内容：
+- **Bug 修复**：修复了在 Source 源码格式化导出时，格式化器会意外在 `<pre><code>` 区块内部强加换行导致第三方渲染排版破损的问题。
+- **Bug 修复**：修复了点击“全屏 / 退出全屏”或者按 ESC 后，全屏图标状态显示不同步的 bug。
+- **增强**：翻新了 `Demo` 开发环境与预览界面的排版布局以及新用例支持。
 
-当前版本已经具备以下核心能力：
+---
 
-- 双工具栏富文本编辑体验
-- 原生 HTML 容器启动
-- `textarea` 启动与自动回填
-- ESM / UMD / IIFE 三种构建产物
-- CDN 直接接入，无需 npm
-- Source 按钮切换源码编辑
-- 左侧源码、右侧高保真预览
-- 完整 HTML 文档保留
-- fragment HTML 预处理与回写
-- Raw HTML Block 占位与保活
-- 基础富文本能力：
-  - 撤销 / 重做
-  - 格式刷
-  - 清除格式
-  - 标题 / 正文
-  - 字体 / 字号
-  - 粗体 / 斜体 / 下划线 / 删除线
-  - 颜色
-  - 引用
-  - inline code
-  - code block
-  - 列表
-  - 链接
-  - 表格
-  - 图片
-  - Callout
-  - 全屏
+## 1.2.0 历史更新内容
 
-## 当前较为严重的 BUG
+这部分升级是从 `1.0.x` 到 `1.2.0` 的一次重要升级，重点集中在表格重构、高保真能力提升，以及一批交互 bug 修复。
 
-将在下一个版本进行更新，计划于 `2026.06` 之前完成。
+- 表格能力重构：
+  - 支持整表拖拽手柄
+  - 支持行列操作控件
+  - 支持右下角缩放手柄
+  - 支持行高持久化
+  - 优化 Source / Visual 往返稳定性
+- 代码块高保真重构：
+  - 支持高保真源码输出
+  - 支持第三方 HTML 环境渲染
+  - 支持语法高亮标记输出
+  - 优化 source 切回 visual 的稳定性
+- `callout` 与 `table` 支持第三方 HTML 高保真输出
+- Source 模式增强：
+  - 优化 raw HTML 保活规则
+  - 为保活块提供 iframe 高保真预览
+- 第一层工具栏新增“导出 PDF / 打印”功能
+- 链接交互优化：
+  - 普通点击仅选中链接
+  - `Ctrl` / `Cmd + 点击` 才会跳转
+- `quote`、`divide`、`code block` 新增拖拽手柄
+- 修复一批标题字号、删除线、源码预览、工具栏交互等问题
 
-- 表格设计样式仍存在缺陷，当前版本不够适合长文档阅读与编辑
-- 表格交互逻辑仍存在缺陷，手柄、缩放、拖拽等相关交互代码还不稳定
-- Callout 的焦点管理与交互逻辑仍存在缺陷，会影响操作体验
+## 核心思路
 
-其它 bug 欢迎通过 [Issues](https://github.com/JenkinAAA/JEditor/issues) 提出。
+JEditor 会尽量把 Source HTML 视为最终形态，在编辑过程中通过预处理与还原机制，保证复杂 HTML 能尽量保留下来。
 
-## 架构概览
-
-JEditor 当前采用的是一套“Source HTML 为唯一真相”的混合架构：
+整体流程如下：
 
 ```text
 Source HTML
-   -> Parser / Preprocess
-   -> Projection
-   -> Visual Editor (Tiptap)
-   -> restoreRawHTML()
-   -> Output HTML
+  -> preprocessHTML()
+  -> visual projection
+  -> Tiptap editing
+  -> restoreRawHTML()
+  -> output HTML
 ```
 
-可以把它理解为三层：
+因此它非常适合需要保留复杂原生 HTML、第三方 fragment、邮件片段或非 schema 结构内容的场景。
 
-1. Source Layer
-   - 保存原始 HTML
-   - 完整文档模式下保持源码权威
-   - 负责高保真预览
+## 主要特性
 
-2. Projection Layer
-   - 在 `setContent` 前预处理 HTML
-   - 把可识别节点交给 schema
-   - 把未知节点包成 `RawHtmlIsland`
+- 双层工具栏编辑器界面
+- 可视化模式与源码模式双向切换
+- 对不受支持节点进行 raw HTML 保活
+- 支持完整 HTML 文档输入
+- 富文本能力包括：
+  - 标题 / 段落
+  - 字体 / 字号
+  - 粗体 / 斜体 / 下划线 / 删除线
+  - 文字颜色
+  - 对齐 / 行高
+  - 无序列表 / 有序列表
+  - 引用
+  - 行内代码
+  - 代码块
+  - 链接
+  - 图片
+  - Callout
+  - 表格
+- 浏览器打印 / 导出为 PDF
+- 支持 ESM / UMD / IIFE 构建产物
+- 支持不依赖 npm 的 CDN 使用方式
 
-3. Visual Layer
-   - 由 Tiptap 承担结构化编辑能力
-   - 工具栏、插件、命令、选区逻辑都工作在这一层
+## 高保真 HTML 策略
 
-## 三种编辑状态
+对于复杂节点，JEditor 采用“双形态”策略：
 
-### 1. Visual Mode
+- 在 source 输出中保留适合第三方 HTML 环境的高保真结构
+- 在 visual 编辑中使用更适合 ProseMirror / Tiptap 处理的内部结构
+- 在 source / visual 切换时完成双向转换
 
-默认模式。适合写正文、排版、插入表格、Callout、图片、代码块等结构化内容。
+当前重点覆盖的节点包括：
 
-这一层主要依赖 Tiptap 提供：
+- code block
+- callout
+- table
 
-- 选区管理
-- 命令链
-- schema
-- 历史记录
-- 节点与 mark 扩展
+## 安装
 
-### 2. Source Mode
+```bash
+npm install @jenkin-a/jeditor
+```
 
-点击右侧 `Source` 按钮进入。
-
-当前实现为：
-
-- 左侧：源码编辑区 `textarea`
-- 右侧：高保真 iframe 预览
-
-当内容是完整 HTML 文档时，JEditor 不会强制把它重新喂回可视化编辑器，从而避免：
-
-- `<!DOCTYPE html>` 丢失
-- `<head>` 丢失
-- `<style>` 丢失
-- `<script>` 丢失
-- 文档结构被 Tiptap 规范化
-
-### 3. Hybrid / Preservation Flow
-
-这是 JEditor 当前最关键的一层。
-
-对于 fragment HTML，JEditor 会在 `setContent()` 之前先做预处理：
-
-- 支持的节点：正常解析进入编辑器
-- 不支持的节点：包成 `raw-html` 占位节点
-
-导出时再通过 `restoreRawHTML()` 还原成原始 HTML。
-
-目标很明确：
-
-`未知 HTML 不一定能编辑，但不能被删除。`
-
-## HTML 保活机制
-
-JEditor 的 HTML 保活目前可以简单理解为三步：
-
-1. `preprocessHTML`
-   - 在 `setContent()` 前执行
-   - 可识别节点正常进入编辑器
-   - 不可识别节点转成 `raw-html`
-
-2. `RawHtmlIsland`
-   - 作为不可拆分的块节点存在
-   - 负责保存原始 HTML，而不是强行结构化解析
-
-3. `restoreRawHTML`
-   - 在 `getHTML()` 时执行
-   - 把 `raw-html` 占位恢复成原始 `outerHTML`
-
-这意味着即使某些 HTML 无法在可视化层直接编辑，导出时仍然可以尽量保持原样。
-
-## 插件体系
-
-JEditor 使用插件驱动工具栏和命令。
-
-每个插件通常包含：
-
-- `name`
-- `toolbar`
-- `tiptapExtension`
-- `command`
-- `isActive`
-- `renderPopover`
-- `init / destroy`
-
-这意味着：
-
-- UI 与命令可以解耦
-- 工具栏项可以按配置组合
-- 扩展新按钮时无需重写编辑器核心
-
-## 安装与开发
+## 本地开发
 
 ```bash
 npm install
 npm run dev
 npm run build
+npm test
 npm run preview
 ```
 
@@ -193,6 +136,10 @@ npm run preview
 - `dist/jeditor.iife.js`
 - `dist/jeditor.css`
 
+发版检查清单：
+
+- `docs/release-checklist.md`
+
 ## ESM 用法
 
 ```js
@@ -200,31 +147,30 @@ import '@jenkin-a/jeditor/dist/jeditor.css'
 import { JEditor } from '@jenkin-a/jeditor'
 
 const editor = JEditor.create('#editor', {
-  placeholder: '开始你的创作...',
+  placeholder: '开始输入...',
 })
 ```
 
-也可以直接从 HTML 字符串创建：
+也可以直接从 HTML 字符串初始化：
 
 ```js
 const editor = JEditor.fromHTML('#editor', '<h2>Hello</h2><p>World</p>')
 ```
 
-## CDN / 无 npm 用法
+## CDN 用法
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@jenkin-a/jeditor@1.0.8/dist/jeditor.css">
-<script src="https://unpkg.com/feather-icons"></script>
-<script src="https://unpkg.com/@jenkin-a/jeditor@1.0.8/dist/jeditor.iife.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@jenkin-a/jeditor@1.2.1/dist/jeditor.css" />
+<script src="https://unpkg.com/@jenkin-a/jeditor@1.2.1/dist/jeditor.iife.js"></script>
 
 <div id="editor">
-  <h2>你好，JEditor</h2>
-  <p>这里的原生 HTML 会在启动时被解析。</p>
+  <h2>Hello, JEditor</h2>
+  <p>容器中的原生 HTML 会在初始化时被解析。</p>
 </div>
 
 <script>
   const editor = window.JEditor.create('#editor', {
-    placeholder: '开始你的创作...',
+    placeholder: '开始输入...',
   })
 </script>
 ```
@@ -240,28 +186,24 @@ editor.importHTML('<p>Hello</p>')
 editor.focus()
 editor.destroy()
 editor.toggleSourceMode()
+editor.exportPDF()
 ```
 
 ## 适用场景
 
-JEditor 适合以下场景：
-
-- 企业知识库编辑器
-- SOP / 公告 / 文档创作台
-- 支持 Source HTML 的 CMS 编辑器
-- 需要可视化 + HTML 混合编辑的后台系统
-- 需要 CDN 直连接入的轻量编辑器
+- 知识库编辑器
+- 文档系统
+- 需要感知 HTML 源码的 CMS 编辑器
+- 同时需要 WYSIWYG 和 HTML 编辑的后台工具
+- 邮件 HTML 或 fragment 工作流
+- 偏向浏览器集成与 CDN 交付的场景
 
 ## 当前边界
 
-虽然当前版本已经非常强，但它仍在持续演进中。
-
-目前仍存在一些边界：
-
-- 部分 UI 细节仍需继续打磨
-- 个别工具栏交互仍可继续优化
-- 复杂未知 inline HTML 的保活能力还不是最终形态
-- Source Mode 与 Hybrid Mode 还会继续深化
+- 仓库中暂时还没有自动化测试
+- 一些 HTML 保活规则仍然是启发式策略，特殊结构可能需要继续调优
+- 如果文档非常大，且包含较多保活块或高保真块，source / visual 切换可能会偏重
+- PDF 导出当前走浏览器打印流程，因此“另存为 PDF”的具体体验取决于浏览器和系统
 
 ## License
 

@@ -6,47 +6,49 @@ import { createToolbarDOM, initToolbarEvents } from './toolbar/ui.js'
 import { formatHTMLForDisplay, preprocessHTML, restoreRawHTML } from './core/html-preservation.js'
 
 function resolveElement(target) {
-    const el = typeof target === 'string'
-        ? document.querySelector(target)
-        : target
+  const el = typeof target === 'string' ? document.querySelector(target) : target
 
-    if (!el) {
-        throw new Error(`[JEditor] Container not found: ${target}`)
-    }
+  if (!el) {
+    throw new Error(`[JEditor] Container not found: ${target}`)
+  }
 
-    return el
+  return el
 }
 
 function getInitialContent(sourceEl, config) {
-    if (config.content != null) return config.content
+  if (config.content != null) return config.content
 
-    if (sourceEl instanceof HTMLTextAreaElement) {
-        const value = sourceEl.value.trim()
-        return value || null
-    }
+  if (sourceEl instanceof HTMLTextAreaElement) {
+    const value = sourceEl.value.trim()
+    return value || null
+  }
 
-    const html = sourceEl.innerHTML.trim()
-    return html || null
+  const html = sourceEl.innerHTML.trim()
+  return html || null
 }
 
 function createMountElement(sourceEl) {
-    if (sourceEl instanceof HTMLTextAreaElement) {
-        const mountEl = document.createElement('div')
-        mountEl.className = sourceEl.className
-        sourceEl.insertAdjacentElement('afterend', mountEl)
-        sourceEl.style.display = 'none'
-        return mountEl
-    }
+  if (sourceEl instanceof HTMLTextAreaElement) {
+    const mountEl = document.createElement('div')
+    mountEl.className = sourceEl.className
+    sourceEl.insertAdjacentElement('afterend', mountEl)
+    sourceEl.style.display = 'none'
+    return mountEl
+  }
 
-    sourceEl.innerHTML = ''
-    return sourceEl
+  sourceEl.innerHTML = ''
+  return sourceEl
 }
 
 function isFullDocumentHTML(content = '') {
-    return /<!DOCTYPE\s+html/i.test(content) || /<html[\s>]/i.test(content)
+  return /<!DOCTYPE\s+html/i.test(content) || /<html[\s>]/i.test(content)
 }
 
 const VIEWER_STYLE = `
+@page {
+    size: auto;
+    margin: 16mm;
+}
 body {
     margin: 0;
     padding: 32px 60px;
@@ -64,6 +66,9 @@ body * {
 h1 { font-size: 2em; font-weight: bold; margin-bottom: 0.5em; }
 h2 { font-size: 1.5em; font-weight: bold; margin-bottom: 0.5em; }
 h3 { font-size: 1.25em; font-weight: bold; margin-bottom: 0.5em; }
+h4 { font-size: 1.125em; font-weight: bold; margin-bottom: 0.5em; }
+h5 { font-size: 1em; font-weight: bold; margin-bottom: 0.5em; }
+h6 { font-size: 1em; font-weight: bold; margin-bottom: 0.5em; }
 p { margin-bottom: 0.8em; line-height: 1.7; }
 blockquote {
     margin: 0.8em 0;
@@ -138,6 +143,16 @@ a {
     text-decoration-thickness: 1px;
     text-underline-offset: 2px;
 }
+s,
+strike {
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: repeat-x;
+    background-size: 100% max(1px, 0.08em);
+    background-position: 0 58%;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
 code {
     padding: 0.14em 0.42em;
     border: 1px solid #e8edf3;
@@ -152,7 +167,10 @@ pre {
     margin: 1em 0;
     overflow-x: auto;
 }
-pre code.je-code-block {
+pre code[class^="language-"],
+pre code[class*=" language-"],
+pre code.hljs,
+pre code {
     display: block;
     padding: 12px 16px 16px;
     border: none;
@@ -164,31 +182,31 @@ pre code.je-code-block {
     font-size: 13px;
     box-shadow: none;
 }
-pre code.je-code-block .hljs-comment,
-pre code.je-code-block .hljs-quote {
+pre code .hljs-comment,
+pre code .hljs-quote {
     color: #6a737d;
     font-style: italic;
 }
-pre code.je-code-block .hljs-keyword,
-pre code.je-code-block .hljs-doctag,
-pre code.je-code-block .hljs-selector-tag,
-pre code.je-code-block .hljs-literal,
-pre code.je-code-block .hljs-type {
+pre code .hljs-keyword,
+pre code .hljs-doctag,
+pre code .hljs-selector-tag,
+pre code .hljs-literal,
+pre code .hljs-type {
     color: #d73a49;
 }
-pre code.je-code-block .hljs-string,
-pre code.je-code-block .hljs-attr,
-pre code.je-code-block .hljs-template-tag {
+pre code .hljs-string,
+pre code .hljs-attr,
+pre code .hljs-template-tag {
     color: #032f62;
 }
-pre code.je-code-block .hljs-number,
-pre code.je-code-block .hljs-built_in,
-pre code.je-code-block .hljs-title.class_,
-pre code.je-code-block .hljs-symbol {
+pre code .hljs-number,
+pre code .hljs-built_in,
+pre code .hljs-title.class_,
+pre code .hljs-symbol {
     color: #005cc5;
 }
-pre code.je-code-block .hljs-function,
-pre code.je-code-block .hljs-title.function_ {
+pre code .hljs-function,
+pre code .hljs-title.function_ {
     color: #6f42c1;
 }
 table {
@@ -211,15 +229,60 @@ th {
     font-weight: 600;
     color: #374151;
 }
+.je-callout {
+    margin: 12px 0;
+    width: 100%;
+    padding: 14px 16px 16px;
+    border-radius: 14px;
+    background: var(--je-callout-bg, #FAF8FF);
+    color: var(--je-callout-color, #9333EA);
+    border: 1px solid color-mix(in srgb, var(--je-callout-color, #9333EA) 12%, transparent);
+}
+.je-callout-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    user-select: none;
+}
+.je-callout[data-callout-type="default"] .je-callout-header {
+    display: none;
+}
+.je-callout-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+.je-callout-icon svg {
+    width: 18px;
+    height: 18px;
+}
+.je-callout-title {
+    font-size: 14px;
+    font-weight: 700;
+}
+.je-callout-body {
+    color: inherit;
+    min-height: 24px;
+}
+.je-callout-body > :last-child {
+    margin-bottom: 0;
+}
+.je-callout-body p {
+    color: inherit;
+}
 `
 
-function wrapHTMLDocument(fragment = '') {
-    return `<!DOCTYPE html>
+function wrapHTMLDocument(fragment = '', title = 'JEditor Source Preview') {
+  return `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JEditor Source Preview</title>
+    <title>${title}</title>
     <style>${VIEWER_STYLE}</style>
 </head>
 <body>
@@ -229,369 +292,479 @@ ${fragment}
 }
 
 function extractVisualHTML(source = '') {
-    if (!isFullDocumentHTML(source)) return source
+  if (!isFullDocumentHTML(source)) return source
 
-    const doc = new DOMParser().parseFromString(source, 'text/html')
-    return doc.body?.innerHTML?.trim() || '<p></p>'
+  const doc = new DOMParser().parseFromString(source, 'text/html')
+  return doc.body?.innerHTML?.trim() || '<p></p>'
 }
 
 export class JEditor {
-    static create(target, userConfig = {}) {
-        return new JEditor(resolveElement(target), userConfig)
+  static create(target, userConfig = {}) {
+    return new JEditor(resolveElement(target), userConfig)
+  }
+
+  static fromHTML(target, html, userConfig = {}) {
+    return JEditor.create(target, {
+      ...userConfig,
+      content: html,
+    })
+  }
+
+  constructor(container, userConfig = {}) {
+    this._sourceElement = container
+    this._config = mergeConfig(userConfig)
+    this._pm = new PluginManager()
+    this._editor = null
+    this._toolbarCleanup = null
+    this._mountElement = null
+    this._editorArea = null
+    this._visualHost = null
+    this._documentPreview = null
+    this._sourcePane = null
+    this._sourceTextarea = null
+    this._sourcePreview = null
+    this._sourceMode = false
+    this._sourceDocumentHTML = null
+    this._sourceDocumentMode = false
+    this._visualDirtySinceSource = false
+    this._suspendVisualSync = false
+    this._sourceRawValue = ''
+    this._sourceDisplayValue = ''
+    this._scrollCleanup = null
+    this._printFrame = null
+
+    this._bootstrap()
+  }
+
+  _openSourceForRawHTML(rawHTML) {
+    this.toggleSourceMode(true)
+
+    if (!this._sourceTextarea) return
+
+    const index = this._sourceTextarea.value.indexOf(rawHTML)
+    this._sourceTextarea.focus()
+
+    if (index >= 0) {
+      this._sourceTextarea.setSelectionRange(index, index + rawHTML.length)
+    }
+  }
+
+  _normalizeVisualContent(content) {
+    return preprocessHTML(extractVisualHTML(content ?? ''))
+  }
+
+  _getVisualHTML() {
+    return restoreRawHTML(this._editor.getHTML())
+  }
+
+  _getSourceDisplayHTML(source) {
+    if (this._sourceDocumentMode && !this._visualDirtySinceSource && source) {
+      return source
+    }
+    return formatHTMLForDisplay(source || '')
+  }
+
+  _getCurrentSourceHTML() {
+    if (!this._sourceMode) {
+      return this.getHTML()
     }
 
-    static fromHTML(target, html, userConfig = {}) {
-        return JEditor.create(target, {
-            ...userConfig,
-            content: html,
-        })
+    if (this._sourceTextarea.value === this._sourceDisplayValue) {
+      return this._sourceRawValue
     }
 
-    constructor(container, userConfig = {}) {
-        this._sourceElement = container
-        this._config = mergeConfig(userConfig)
-        this._pm = new PluginManager()
-        this._editor = null
-        this._toolbarCleanup = null
-        this._mountElement = null
-        this._editorArea = null
-        this._visualHost = null
-        this._documentPreview = null
-        this._sourcePane = null
-        this._sourceTextarea = null
-        this._sourcePreview = null
-        this._sourceMode = false
-        this._sourceDocumentHTML = null
-        this._sourceDocumentMode = false
-        this._visualDirtySinceSource = false
-        this._suspendVisualSync = false
-        this._sourceRawValue = ''
-        this._sourceDisplayValue = ''
-        this._scrollCleanup = null
+    return this._sourceTextarea.value
+  }
 
-        this._bootstrap()
+  _getPrintableHTMLDocument() {
+    const source = this._getCurrentSourceHTML() || this.getHTML() || '<p></p>'
+    if (isFullDocumentHTML(source)) {
+      return source
     }
 
-    _openSourceForRawHTML(rawHTML) {
-        this.toggleSourceMode(true)
+    const title = document.title || 'JEditor Export'
+    return wrapHTMLDocument(source, title)
+  }
 
-        if (!this._sourceTextarea) return
+  _cleanupPrintFrame(frame) {
+    if (!frame) return
+    frame.remove()
+    if (this._printFrame === frame) {
+      this._printFrame = null
+    }
+  }
 
-        const index = this._sourceTextarea.value.indexOf(rawHTML)
-        this._sourceTextarea.focus()
+  exportPDF() {
+    const printableHTML = this._getPrintableHTMLDocument()
+    const frame = document.createElement('iframe')
+    frame.className = 'je-print-frame'
+    frame.setAttribute('aria-hidden', 'true')
+    frame.style.position = 'fixed'
+    frame.style.right = '0'
+    frame.style.bottom = '0'
+    frame.style.width = '0'
+    frame.style.height = '0'
+    frame.style.border = '0'
+    frame.style.opacity = '0'
+    frame.style.pointerEvents = 'none'
 
-        if (index >= 0) {
-            this._sourceTextarea.setSelectionRange(index, index + rawHTML.length)
+    this._cleanupPrintFrame(this._printFrame)
+    this._printFrame = frame
+    document.body.appendChild(frame)
+
+    let cleaned = false
+    const cleanup = () => {
+      if (cleaned) return
+      cleaned = true
+      this._cleanupPrintFrame(frame)
+    }
+
+    frame.onload = () => {
+      const printWindow = frame.contentWindow
+      if (!printWindow) {
+        cleanup()
+        return
+      }
+
+      const handleAfterPrint = () => {
+        printWindow.removeEventListener('afterprint', handleAfterPrint)
+        window.removeEventListener('focus', handleFocusBack)
+        window.setTimeout(cleanup, 0)
+      }
+
+      const handleFocusBack = () => {
+        window.removeEventListener('focus', handleFocusBack)
+        printWindow.removeEventListener('afterprint', handleAfterPrint)
+        window.setTimeout(cleanup, 300)
+      }
+
+      printWindow.addEventListener('afterprint', handleAfterPrint)
+      window.addEventListener('focus', handleFocusBack, { once: true })
+
+      window.setTimeout(() => {
+        try {
+          printWindow.focus()
+          printWindow.print()
+        } catch {
+          cleanup()
         }
+      }, 80)
     }
 
-    _normalizeVisualContent(content) {
-        return preprocessHTML(extractVisualHTML(content ?? ''))
+    frame.srcdoc = printableHTML
+    return this
+  }
+
+  _bootstrap() {
+    this._pm.registerAll(builtinPlugins)
+
+    const initialContent = getInitialContent(this._sourceElement, this._config)
+    const mountEl = createMountElement(this._sourceElement)
+    const moreController = {
+      pluginManager: this._pm,
+      staticItems: ['blockquote', 'horizontalRule'],
+      hiddenItems: [],
+      getItems() {
+        return [...this.staticItems, ...this.hiddenItems]
+      },
+    }
+    const editorConfig = {
+      ...this._config,
+      content: this._normalizeVisualContent(initialContent ?? this._config.content),
+      exportPdf: {
+        ...this._config.exportPdf,
+        controller: {
+          export: () => this.exportPDF(),
+        },
+      },
+      source: {
+        ...this._config.source,
+        controller: {
+          toggle: () => this.toggleSourceMode(),
+          isActive: () => this._sourceMode,
+        },
+      },
+      htmlPreservation: {
+        ...this._config.htmlPreservation,
+        onOpenSource: (rawHTML) => this._openSourceForRawHTML(rawHTML),
+      },
+      more: {
+        ...this._config.more,
+        controller: moreController,
+      },
     }
 
-    _getVisualHTML() {
-        return restoreRawHTML(this._editor.getHTML())
+    this._sourceDocumentHTML = initialContent ?? this._config.content ?? null
+    this._sourceDocumentMode = isFullDocumentHTML(this._sourceDocumentHTML || '')
+
+    mountEl.classList.add('je-container')
+    mountEl.appendChild(createToolbarDOM(editorConfig, this._pm))
+
+    const wrapper = document.createElement('div')
+    wrapper.className = 'je-editor-area'
+    mountEl.appendChild(wrapper)
+
+    const visualHost = document.createElement('div')
+    visualHost.className = 'je-editor-visual'
+    wrapper.appendChild(visualHost)
+
+    const documentPreview = document.createElement('iframe')
+    documentPreview.className = 'je-document-preview'
+    documentPreview.setAttribute(
+      'sandbox',
+      'allow-scripts allow-same-origin allow-forms allow-popups',
+    )
+    visualHost.appendChild(documentPreview)
+
+    const sourcePane = document.createElement('div')
+    sourcePane.className = 'je-source-pane'
+
+    const sourceTextarea = document.createElement('textarea')
+    sourceTextarea.className = 'je-source-textarea'
+    sourceTextarea.spellcheck = false
+    sourceTextarea.placeholder = '<!DOCTYPE html>'
+
+    const sourcePreview = document.createElement('iframe')
+    sourcePreview.className = 'je-source-preview'
+    sourcePreview.setAttribute(
+      'sandbox',
+      'allow-scripts allow-same-origin allow-forms allow-popups',
+    )
+
+    sourcePane.append(sourceTextarea, sourcePreview)
+    wrapper.appendChild(sourcePane)
+
+    this._editor = createEditor(visualHost, this._pm.getTiptapExtensions(), editorConfig)
+    this._pm.initAll(this._editor, editorConfig)
+    this._toolbarCleanup = initToolbarEvents(mountEl, this._editor, this._pm, {
+      moreController,
+    })
+    this._mountElement = mountEl
+    this._editorArea = wrapper
+    this._visualHost = visualHost
+    this._documentPreview = documentPreview
+    this._sourcePane = sourcePane
+    this._sourceTextarea = sourceTextarea
+    this._sourcePreview = sourcePreview
+
+    this._sourceTextarea.addEventListener('input', () => {
+      this._renderSourcePreview(this._sourceTextarea.value)
+    })
+
+    this._editor.on('update', () => {
+      if (this._suspendVisualSync || this._sourceMode) return
+      this._visualDirtySinceSource = true
+      if (!this._sourceDocumentMode) {
+        this._sourceDocumentHTML = this._getVisualHTML()
+      }
+      this._syncTextareaValue()
+    })
+
+    if (this._sourceElement instanceof HTMLTextAreaElement) {
+      this._syncTextareaValue()
     }
 
-    _getSourceDisplayHTML(source) {
-        if (this._sourceDocumentMode && !this._visualDirtySinceSource && source) {
-            return source
-        }
-        return formatHTMLForDisplay(source || '')
+    this._renderSourcePreview(this._sourceDocumentHTML || this._editor.getHTML())
+    this._renderDocumentPreview(this._sourceDocumentHTML || this._editor.getHTML())
+    this._setSourceMode(false)
+    this._bindScrollState()
+  }
+
+  _bindScrollState() {
+    if (!this._mountElement) return
+
+    const updateScrolledState = () => {
+      this._mountElement.classList.toggle('is-scrolled', window.scrollY > 0)
     }
 
-    _bootstrap() {
-        this._pm.registerAll(builtinPlugins)
+    window.addEventListener('scroll', updateScrolledState, { passive: true })
+    window.addEventListener('resize', updateScrolledState)
+    updateScrolledState()
 
-        const initialContent = getInitialContent(this._sourceElement, this._config)
-        const mountEl = createMountElement(this._sourceElement)
-        const moreController = {
-            pluginManager: this._pm,
-            staticItems: ['blockquote', 'horizontalRule'],
-            hiddenItems: [],
-            getItems() {
-                return [...this.staticItems, ...this.hiddenItems]
-            },
-        }
-        const editorConfig = {
-            ...this._config,
-            content: this._normalizeVisualContent(initialContent ?? this._config.content),
-            source: {
-                ...this._config.source,
-                controller: {
-                    toggle: () => this.toggleSourceMode(),
-                    isActive: () => this._sourceMode,
-                },
-            },
-            htmlPreservation: {
-                ...this._config.htmlPreservation,
-                onOpenSource: (rawHTML) => this._openSourceForRawHTML(rawHTML),
-            },
-            more: {
-                ...this._config.more,
-                controller: moreController,
-            },
-        }
+    this._scrollCleanup = () => {
+      window.removeEventListener('scroll', updateScrolledState)
+      window.removeEventListener('resize', updateScrolledState)
+    }
+  }
 
-        this._sourceDocumentHTML = initialContent ?? this._config.content ?? null
-        this._sourceDocumentMode = isFullDocumentHTML(this._sourceDocumentHTML || '')
+  _syncTextareaValue() {
+    if (!this._sourceElement || !this._editor) return
+    if (!(this._sourceElement instanceof HTMLTextAreaElement)) return
+    this._sourceElement.value = this.getHTML()
+  }
 
-        mountEl.classList.add('je-container')
-        mountEl.appendChild(createToolbarDOM(editorConfig, this._pm))
+  _renderSourcePreview(source) {
+    if (!this._sourcePreview) return
+    this._sourcePreview.srcdoc = isFullDocumentHTML(source) ? source : wrapHTMLDocument(source)
+  }
 
-        const wrapper = document.createElement('div')
-        wrapper.className = 'je-editor-area'
-        mountEl.appendChild(wrapper)
+  _renderDocumentPreview(source) {
+    if (!this._documentPreview) return
+    this._documentPreview.srcdoc = isFullDocumentHTML(source) ? source : wrapHTMLDocument(source)
+  }
 
-        const visualHost = document.createElement('div')
-        visualHost.className = 'je-editor-visual'
-        wrapper.appendChild(visualHost)
+  _setToolbarSourceState(isSourceMode) {
+    if (!this._mountElement) return
+    this._mountElement.classList.toggle('is-source-mode', isSourceMode)
 
-        const documentPreview = document.createElement('iframe')
-        documentPreview.className = 'je-document-preview'
-        documentPreview.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups')
-        visualHost.appendChild(documentPreview)
+    const allowed = new Set(['source', 'fullscreen'])
+    const visualLocked = !isSourceMode && this._sourceDocumentMode && !this._visualDirtySinceSource
+    this._mountElement
+      .querySelectorAll('[data-command], [data-command-toggle]')
+      .forEach((button) => {
+        const name = button.dataset.command || button.dataset.commandToggle
+        const shouldDisable = (isSourceMode || visualLocked) && !allowed.has(name)
+        button.classList.toggle('is-disabled', shouldDisable)
+        button.disabled = shouldDisable
+      })
 
-        const sourcePane = document.createElement('div')
-        sourcePane.className = 'je-source-pane'
+    this._mountElement.querySelectorAll('[data-command-group]').forEach((group) => {
+      const name = group.dataset.commandGroup
+      const shouldDisable = (isSourceMode || visualLocked) && !allowed.has(name)
+      group.classList.toggle('is-disabled', shouldDisable)
+    })
+  }
 
-        const sourceTextarea = document.createElement('textarea')
-        sourceTextarea.className = 'je-source-textarea'
-        sourceTextarea.spellcheck = false
-        sourceTextarea.placeholder = '<!DOCTYPE html>'
+  _setSourceMode(isSourceMode) {
+    this._sourceMode = isSourceMode
+    const lockedDocumentPreview =
+      !isSourceMode && this._sourceDocumentMode && !this._visualDirtySinceSource
+    this._visualHost.style.display = isSourceMode ? 'none' : ''
+    this._editor.view.dom.style.display = lockedDocumentPreview ? 'none' : ''
+    this._documentPreview.classList.toggle('is-active', lockedDocumentPreview)
+    this._sourcePane.classList.toggle('is-active', isSourceMode)
+    this._setToolbarSourceState(isSourceMode)
+    this._syncTextareaValue()
+  }
 
-        const sourcePreview = document.createElement('iframe')
-        sourcePreview.className = 'je-source-preview'
-        sourcePreview.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups')
+  toggleSourceMode(force) {
+    const nextMode = typeof force === 'boolean' ? force : !this._sourceMode
 
-        sourcePane.append(sourceTextarea, sourcePreview)
-        wrapper.appendChild(sourcePane)
+    if (nextMode === this._sourceMode) return this
 
-        this._editor = createEditor(visualHost, this._pm.getTiptapExtensions(), editorConfig)
-        this._pm.initAll(this._editor, editorConfig)
-        this._toolbarCleanup = initToolbarEvents(mountEl, this._editor, this._pm, {
-            moreController,
-        })
-        this._mountElement = mountEl
-        this._editorArea = wrapper
-        this._visualHost = visualHost
-        this._documentPreview = documentPreview
-        this._sourcePane = sourcePane
-        this._sourceTextarea = sourceTextarea
-        this._sourcePreview = sourcePreview
-
-        this._sourceTextarea.addEventListener('input', () => {
-            this._renderSourcePreview(this._sourceTextarea.value)
-        })
-
-        this._editor.on('update', () => {
-            if (this._suspendVisualSync || this._sourceMode) return
-            this._visualDirtySinceSource = true
-            if (!this._sourceDocumentMode) {
-                this._sourceDocumentHTML = this._getVisualHTML()
-            }
-            this._syncTextareaValue()
-        })
-
-        if (this._sourceElement instanceof HTMLTextAreaElement) {
-            this._syncTextareaValue()
-        }
-
-        this._renderSourcePreview(this._sourceDocumentHTML || this._editor.getHTML())
-        this._renderDocumentPreview(this._sourceDocumentHTML || this._editor.getHTML())
-        this._setSourceMode(false)
-        this._bindScrollState()
+    if (nextMode) {
+      const sourceValue =
+        this._sourceDocumentMode && !this._visualDirtySinceSource
+          ? this._sourceDocumentHTML || this._getVisualHTML()
+          : this._getVisualHTML()
+      const displayValue = this._getSourceDisplayHTML(sourceValue)
+      this._sourceRawValue = sourceValue
+      this._sourceDisplayValue = displayValue
+      this._sourceTextarea.value = displayValue
+      this._renderSourcePreview(sourceValue)
+      this._setSourceMode(true)
+      this._sourceTextarea.focus()
+      return this
     }
 
-    _bindScrollState() {
-        if (!this._mountElement) return
+    const nextSource =
+      this._sourceTextarea.value === this._sourceDisplayValue
+        ? this._sourceRawValue
+        : this._sourceTextarea.value
+    this._sourceDocumentHTML = nextSource
+    this._sourceDocumentMode = isFullDocumentHTML(nextSource)
+    this._visualDirtySinceSource = false
+    this._renderDocumentPreview(nextSource)
+    if (!this._sourceDocumentMode) {
+      this._suspendVisualSync = true
+      this._editor.commands.setContent(this._normalizeVisualContent(nextSource), false)
+      this._suspendVisualSync = false
+    }
+    this._sourceRawValue = nextSource
+    this._sourceDisplayValue = this._getSourceDisplayHTML(nextSource)
+    this._setSourceMode(false)
+    this.focus()
+    return this
+  }
 
-        const updateScrolledState = () => {
-            this._mountElement.classList.toggle('is-scrolled', window.scrollY > 0)
-        }
+  getHTML() {
+    if (this._sourceMode) {
+      return this._sourceTextarea.value
+    }
+    if (this._sourceDocumentMode && !this._visualDirtySinceSource && this._sourceDocumentHTML) {
+      return this._sourceDocumentHTML
+    }
+    return this._getVisualHTML()
+  }
 
-        window.addEventListener('scroll', updateScrolledState, { passive: true })
-        window.addEventListener('resize', updateScrolledState)
-        updateScrolledState()
+  getJSON() {
+    return this._editor.getJSON()
+  }
 
-        this._scrollCleanup = () => {
-            window.removeEventListener('scroll', updateScrolledState)
-            window.removeEventListener('resize', updateScrolledState)
-        }
+  getText() {
+    return this._editor.getText()
+  }
+
+  setContent(content, emitUpdate = false) {
+    this._sourceDocumentHTML = content
+    this._sourceDocumentMode = isFullDocumentHTML(content)
+    this._visualDirtySinceSource = false
+    this._sourceRawValue = content || ''
+    this._sourceDisplayValue = this._getSourceDisplayHTML(content || '')
+    if (this._sourceTextarea) {
+      this._sourceTextarea.value = this._sourceMode ? this._sourceDisplayValue : content || ''
+      this._renderSourcePreview(content)
+    }
+    this._renderDocumentPreview(content)
+    if (!this._sourceDocumentMode) {
+      this._suspendVisualSync = true
+      this._editor.commands.setContent(this._normalizeVisualContent(content), emitUpdate)
+      this._suspendVisualSync = false
+    }
+    this._setSourceMode(this._sourceMode)
+    this._syncTextareaValue()
+    return this
+  }
+
+  importHTML(html, emitUpdate = false) {
+    return this.setContent(html, emitUpdate)
+  }
+
+  isEmpty() {
+    return this._editor.isEmpty
+  }
+
+  focus() {
+    if (this._sourceDocumentMode && !this._visualDirtySinceSource && !this._sourceMode) {
+      return this
+    }
+    this._editor.commands.focus()
+    return this
+  }
+
+  on(event, handler) {
+    this._editor.on(event, handler)
+    return this
+  }
+
+  off(event, handler) {
+    this._editor.off(event, handler)
+    return this
+  }
+
+  get tiptap() {
+    return this._editor
+  }
+
+  destroy() {
+    const html = this.getHTML()
+
+    this._toolbarCleanup?.()
+    this._scrollCleanup?.()
+    this._cleanupPrintFrame(this._printFrame)
+    this._pm.destroyAll(this._editor)
+    this._editor?.destroy()
+
+    if (this._sourceElement instanceof HTMLTextAreaElement) {
+      this._sourceElement.value = html
+      this._sourceElement.style.display = ''
+      this._mountElement?.remove()
+    } else {
+      this._mountElement.innerHTML = html
+      this._mountElement.classList.remove('je-container')
     }
 
-    _syncTextareaValue() {
-        if (!this._sourceElement || !this._editor) return
-        if (!(this._sourceElement instanceof HTMLTextAreaElement)) return
-        this._sourceElement.value = this.getHTML()
-    }
-
-    _renderSourcePreview(source) {
-        if (!this._sourcePreview) return
-        this._sourcePreview.srcdoc = isFullDocumentHTML(source) ? source : wrapHTMLDocument(source)
-    }
-
-    _renderDocumentPreview(source) {
-        if (!this._documentPreview) return
-        this._documentPreview.srcdoc = isFullDocumentHTML(source) ? source : wrapHTMLDocument(source)
-    }
-
-    _setToolbarSourceState(isSourceMode) {
-        if (!this._mountElement) return
-        this._mountElement.classList.toggle('is-source-mode', isSourceMode)
-
-        const allowed = new Set(['source', 'fullscreen'])
-        const visualLocked = !isSourceMode && this._sourceDocumentMode && !this._visualDirtySinceSource
-        this._mountElement.querySelectorAll('[data-command], [data-command-toggle]').forEach((button) => {
-            const name = button.dataset.command || button.dataset.commandToggle
-            const shouldDisable = (isSourceMode || visualLocked) && !allowed.has(name)
-            button.classList.toggle('is-disabled', shouldDisable)
-            button.disabled = shouldDisable
-        })
-
-        this._mountElement.querySelectorAll('[data-command-group]').forEach((group) => {
-            const name = group.dataset.commandGroup
-            const shouldDisable = (isSourceMode || visualLocked) && !allowed.has(name)
-            group.classList.toggle('is-disabled', shouldDisable)
-        })
-    }
-
-    _setSourceMode(isSourceMode) {
-        this._sourceMode = isSourceMode
-        const lockedDocumentPreview = !isSourceMode && this._sourceDocumentMode && !this._visualDirtySinceSource
-        this._visualHost.style.display = isSourceMode ? 'none' : ''
-        this._editor.view.dom.style.display = lockedDocumentPreview ? 'none' : ''
-        this._documentPreview.classList.toggle('is-active', lockedDocumentPreview)
-        this._sourcePane.classList.toggle('is-active', isSourceMode)
-        this._setToolbarSourceState(isSourceMode)
-        this._syncTextareaValue()
-    }
-
-    toggleSourceMode(force) {
-        const nextMode = typeof force === 'boolean' ? force : !this._sourceMode
-
-        if (nextMode === this._sourceMode) return this
-
-        if (nextMode) {
-            const sourceValue = this._sourceDocumentMode && !this._visualDirtySinceSource
-                ? (this._sourceDocumentHTML || this._getVisualHTML())
-                : this._getVisualHTML()
-            const displayValue = this._getSourceDisplayHTML(sourceValue)
-            this._sourceRawValue = sourceValue
-            this._sourceDisplayValue = displayValue
-            this._sourceTextarea.value = displayValue
-            this._renderSourcePreview(sourceValue)
-            this._setSourceMode(true)
-            this._sourceTextarea.focus()
-            return this
-        }
-
-        const nextSource = this._sourceTextarea.value === this._sourceDisplayValue
-            ? this._sourceRawValue
-            : this._sourceTextarea.value
-        this._sourceDocumentHTML = nextSource
-        this._sourceDocumentMode = isFullDocumentHTML(nextSource)
-        this._visualDirtySinceSource = false
-        this._renderDocumentPreview(nextSource)
-        if (!this._sourceDocumentMode) {
-            this._suspendVisualSync = true
-            this._editor.commands.setContent(this._normalizeVisualContent(nextSource), false)
-            this._suspendVisualSync = false
-        }
-        this._sourceRawValue = nextSource
-        this._sourceDisplayValue = this._getSourceDisplayHTML(nextSource)
-        this._setSourceMode(false)
-        this.focus()
-        return this
-    }
-
-    getHTML() {
-        if (this._sourceMode) {
-            return this._sourceTextarea.value
-        }
-        if (this._sourceDocumentMode && !this._visualDirtySinceSource && this._sourceDocumentHTML) {
-            return this._sourceDocumentHTML
-        }
-        return this._getVisualHTML()
-    }
-
-    getJSON() {
-        return this._editor.getJSON()
-    }
-
-    getText() {
-        return this._editor.getText()
-    }
-
-    setContent(content, emitUpdate = false) {
-        this._sourceDocumentHTML = content
-        this._sourceDocumentMode = isFullDocumentHTML(content)
-        this._visualDirtySinceSource = false
-        this._sourceRawValue = content || ''
-        this._sourceDisplayValue = this._getSourceDisplayHTML(content || '')
-        if (this._sourceTextarea) {
-            this._sourceTextarea.value = this._sourceMode ? this._sourceDisplayValue : (content || '')
-            this._renderSourcePreview(content)
-        }
-        this._renderDocumentPreview(content)
-        if (!this._sourceDocumentMode) {
-            this._suspendVisualSync = true
-            this._editor.commands.setContent(this._normalizeVisualContent(content), emitUpdate)
-            this._suspendVisualSync = false
-        }
-        this._setSourceMode(this._sourceMode)
-        this._syncTextareaValue()
-        return this
-    }
-
-    importHTML(html, emitUpdate = false) {
-        return this.setContent(html, emitUpdate)
-    }
-
-    isEmpty() {
-        return this._editor.isEmpty
-    }
-
-    focus() {
-        if (this._sourceDocumentMode && !this._visualDirtySinceSource && !this._sourceMode) {
-            return this
-        }
-        this._editor.commands.focus()
-        return this
-    }
-
-    on(event, handler) {
-        this._editor.on(event, handler)
-        return this
-    }
-
-    off(event, handler) {
-        this._editor.off(event, handler)
-        return this
-    }
-
-    get tiptap() {
-        return this._editor
-    }
-
-    destroy() {
-        const html = this.getHTML()
-
-        this._toolbarCleanup?.()
-        this._scrollCleanup?.()
-        this._pm.destroyAll()
-        this._editor?.destroy()
-
-        if (this._sourceElement instanceof HTMLTextAreaElement) {
-            this._sourceElement.value = html
-            this._sourceElement.style.display = ''
-            this._mountElement?.remove()
-        } else {
-            this._mountElement.innerHTML = html
-            this._mountElement.classList.remove('je-container')
-        }
-
-        this._editor = null
-        this._mountElement = null
-    }
+    this._editor = null
+    this._mountElement = null
+  }
 }
