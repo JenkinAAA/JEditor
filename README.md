@@ -7,7 +7,7 @@
 当前版本：`v1.2.1`
 
 **✨ 快速体验测试环境：**
-- [👉 CDN 直连 Demo (适合独立环境)](./Demo/cdn.html)
+- [👉 CDN 直连 Demo (适合独立环境)→ 下载该文件后打开可立即体验该工具](./Demo/cdn.html)
 - [👉 本地构建 Demo (适合 NPM 环境)](./Demo/npm.html)
 
 JEditor 是一个基于 Tiptap 的混合编辑器，面向以下场景：
